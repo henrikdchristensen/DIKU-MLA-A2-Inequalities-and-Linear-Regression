@@ -24,18 +24,25 @@ def main():
     X = data[:, 0].reshape(-1, 1)  # Age of the fish
     y = data[:, 1]  # PCB concentration
 
-    model1 = LinearRegression(nonlinear=False)
-    model1.fit(X, y)
-    model1.predict(X)
-    model1.report(y)
-    model1.plot(X, y)
+    model1 = LinearRegression(X, y, y_model_type="linear", X_model_type="linear")
+    model1.fit()
+    model1.predict()
+    model1.report()
+    model1.plot()
 
-    model2 = LinearRegression(nonlinear=True)
-    model2.fit(X, y)
-    model2.predict(X)
-    model2.report(y)
-    model2.plot(X, y)
-    model2.plot_log(X, y)
+    model2 = LinearRegression(X, y, y_model_type="log", X_model_type="linear")
+    model2.fit()
+    model2.predict()
+    model2.report()
+    model2.plot()
+    model2.plot_log()
+
+    model3 = LinearRegression(X, y, y_model_type="log", X_model_type="sqrt")
+    model3.fit()
+    model3.predict()
+    model3.report()
+    model3.plot()
+    model3.plot_sqrt_log()
 
 
 if __name__ == "__main__":
