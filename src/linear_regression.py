@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 
 class LinearRegression:
     def __init__(self, X, y_true, transform_X=False, transform_y=False):
-        self.y_true = y_true
-        self.X = X
         self.transform_X = transform_X
         self.transform_y = transform_y
         self.a = None
@@ -14,14 +12,12 @@ class LinearRegression:
         self.y_transformed = None
         self.y_pred = None
 
-    def _sort_dataset(self):
-        sorted_indices = np.argsort(self.X, axis=0).reshape(-1)
-        self.X = self.X[sorted_indices]
-        self.y_true = self.y_true[sorted_indices]
+        # sort the dataset by X
+        sorted_indices = np.argsort(X, axis=0).reshape(-1)
+        self.X = X[sorted_indices]
+        self.y_true = y_true[sorted_indices]
 
     def _construct_dataset(self):
-        self._sort_dataset()
-
         self.X_transformed = np.sqrt(self.X) if self.transform_X else self.X
         self.y_transformed = np.log(self.y_true) if self.transform_y else self.y_true
 
