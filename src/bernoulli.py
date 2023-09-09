@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.stats import bernoulli
 import matplotlib.pyplot as plt
 
 
@@ -24,8 +23,8 @@ class BernoulliExperiment:
 
         # Perform the experiment 1,000,000 times
         for alpha in self.alphas:
-            # Simulate 20 Bernoulli trials using scipy.stats.bernoulli
-            experiment_results = bernoulli.rvs(self.bias, size=(num_repetitions, num_trials))
+            # Simulate 20 Bernoulli trials
+            experiment_results = np.random.binomial(1, self.bias, size=(num_repetitions, num_trials))
 
             # Calculate the mean of each experiment
             mean_results = np.mean(experiment_results, axis=1)
