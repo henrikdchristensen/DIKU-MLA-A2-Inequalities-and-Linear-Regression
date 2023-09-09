@@ -46,9 +46,6 @@ class LinearRegression:
         print(f"Mean squared error: {self.mean_squared_error()}")
         print(f"R^2: {self.r_squared()}")
         # print predictions and true values
-        print("Predictions\tTrue values")
-        for y_pred, y_true in zip(self.y_pred, self.y_true):
-            print(f"{y_pred}\t{y_true}")
 
     def plot(self):
         # plot the true values and predictions
