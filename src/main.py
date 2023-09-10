@@ -11,7 +11,7 @@ def main():
     experiment1.plot()
 
     # Second experiment
-    experiment2 = BernoulliExperiment(start=0.1, stop=1, step=0.05, bias=0.5)
+    experiment2 = BernoulliExperiment(start=0.1, stop=1, step=0.05, bias=0.1)
     experiment2.run_experiment()
     experiment2.report()
     experiment2.plot()
