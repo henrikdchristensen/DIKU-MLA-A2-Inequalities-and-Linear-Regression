@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 
 
 class LinearRegression:
-    def __init__(self, data, X_map_func=None):
+    def __init__(self, data, X_map_func=None, plot_filename=None):
         self.X_map_func = X_map_func
+
+        self.plot_filename = plot_filename
 
         self.a = None
         self.b = None
@@ -20,13 +22,15 @@ class LinearRegression:
         self.X_prime = X_map_func(self.X) if X_map_func else self.X
         self.y_prime = np.log(self.y_true)
 
-        self.title = f"Linear Regression\nx → {f'{self.X_map_func.__name__}(x)' if self.X_map_func else 'x'}"
+        self.title = (
+            f"Linear Regression of Lake trouts age vs. PCB concentration (ppm)\nx → {f'{self.X_map_func.__name__}(x)' if self.X_map_func else 'x'}"
+        )
 
     def fit_model(self):
-        # Append a column of ones to X
+        # Append a column of ones to X (equation 3.3 in [CI])
         X_tilde = np.c_[np.ones(self.X_prime.shape[0]), self.X_prime]
 
-        # Calculate (X^T * X)^-1 * X^T * y and obtain parameters a and b
+        # Calculate w* = (X^T * X)^-1 * X^T * y and obtain parameters a and b (equation 3.5 in [CI])
         self.b, self.a = np.linalg.inv(X_tilde.T.dot(X_tilde)).dot(X_tilde.T).dot(self.y_prime)
 
         # Fit model h'(x) = a * x + b
@@ -58,12 +62,14 @@ class LinearRegression:
         # Always use "normal" X scale
         plt.scatter(self.X, self.y_true, marker="o", label="True values")
         plt.plot(self.X, self.y_pred, marker="x", linestyle="-", color="r", label="Predictions")
-
-        plt.xlabel("Age of the fish")
-        plt.ylabel("PCB concentration in the fish")
+        plt.xlabel("Age of the lake trout (years)")
+        plt.xticks(np.arange(min(self.X), max(self.X) + 1, 1))
+        plt.ylabel("PCB concentration in the lake trout (ppm)")
         plt.yscale("log")
         plt.title(self.title)
         plt.legend()
-        plt.grid(True)
+        plt.grid(True, which="both")
         plt.tight_layout()
+        if self.plot_filename:
+            plt.savefig(self.plot_filename)
         plt.show()
