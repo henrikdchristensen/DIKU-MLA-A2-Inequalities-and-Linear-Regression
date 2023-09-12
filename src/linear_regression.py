@@ -27,10 +27,9 @@ class LinearRegression:
         self.y_prime = np.log(self.y_true)
 
         # Title for the model
-        self.title = "Linear Regression of Lake trouts"
-        self.subtitle = (
-            "Age (years) vs. PCB concentration (ppm)\nTransformation: x →"
-            f" {f'{self.X_map_func.__name__}(x)' if self.X_map_func else 'x'}"
+        self.title = ("Non-Linear" if self.X_map_func else "Linear") + " Regression of Lake trouts"
+        self.subtitle = "Age (years) vs. PCB concentration (ppm)\n" + (
+            f"Transformation: x → {self.X_map_func.__name__}(x)" if self.X_map_func else ""
         )
 
     def fit_model(self):
@@ -62,6 +61,7 @@ class LinearRegression:
     def report(self):
         print("-" * 50)
         print(self.title)
+        print(self.subtitle)
         print(f"a: {self.a:.4f}")
         print(f"b: {self.b:.4f}")
         print(f"MSE: {self.mse():.4f}")

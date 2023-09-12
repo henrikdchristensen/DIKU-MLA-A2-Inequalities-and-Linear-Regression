@@ -85,6 +85,7 @@ class BernoulliExperiment:
     def report(self):
         print("-" * 50)
         print(self.title)
+        print(self.subtitle)
         for alpha in self.exact_probability_for_alpha_value:
             print(f"P(X >= {alpha:.2f}) ≈ {self.exact_probability(alpha):.2e}")
         print("-" * 50)
