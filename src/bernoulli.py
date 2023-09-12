@@ -4,20 +4,38 @@ from math import comb
 
 
 class BernoulliExperiment:
-    def __init__(self, start, stop, step, bias, plot_filename=None):
+    def __init__(self, start, stop, step, bias, exact_probability_for_alpha_value, plot_filename=None):
+        # Filename of the plot to be saved (if None, no plot is saved)
+        self.plot_filename = plot_filename
+
+        # Alpha values to be tested
         self.start = start
         self.stop = stop
         self.step = step
         self.bias = bias
-        self.plot_filename = plot_filename
-        self.alphas = np.arange(self.start, self.stop + self.step, self.step)  # threshold values
+        self.alphas = np.arange(self.start, self.stop + self.step, self.step)
+
+        # Empirical frequency and bounds for each alpha value
         self.empirical_frequencies = []
         self.markov_bounds = []
         self.chebyshev_bounds = []
         self.hoeffding_bounds = []
-        self.n = 20  # number of i.i.d. Bernoulli random variables being drawn in each repetition of the experiment (i.e. number of trials)
-        self.num_repetitions = 1000000  # number of times the entire experiment (of drawing self.n Bernoulli random variables) is repeated.
-        self.title = f"Bernoulli Experiment\nα ∈ {{{self.start:.2f}, {self.start + self.step:.2f}, ..., {self.stop:.2f}}}, bias={self.bias:.2f}"
+
+        # Calculate exact probabilities for the following alpha values
+        self.exact_probability_for_alpha_value = exact_probability_for_alpha_value
+
+        # Number of i.i.d. Bernoulli random variables being drawn in each repetition of the experiment
+        self.n = 20
+
+        # Number of repetitions the entire experiment (i.e. number of drawing self.n Bernoulli random variables) is repeated.
+        self.num_repetitions = 1000000
+
+        # Title for the experiment
+        self.title = "Bernoulli Experiment"
+        self.subtitle = (
+            f"α ∈ {{{self.start:.2f}, {self.start + self.step:.2f}, ...,"
+            f" {self.stop:.2f}}}, bias={self.bias:.2f}"
+        )
 
     def run_experiment(self):
         for alpha in self.alphas:
@@ -59,29 +77,36 @@ class BernoulliExperiment:
 
     def exact_probability(self, alpha):
         # P(X >= α) = sum(comb(n, k) * p^k * (1 - p)^(n - k))
-        prob = sum(comb(self.n, k) * self.bias**k * (1 - self.bias) ** (self.n - k) for k in range(int(self.n * alpha), self.n + 1))
-        return prob
+        return sum(
+            comb(self.n, k) * self.bias**k * (1 - self.bias) ** (self.n - k)
+            for k in range(int(self.n * alpha), self.n + 1)
+        )
 
     def report(self):
-        # Print exact probabilities for specified alphas
-        alpha_values = [1, 0.95]
         print("-" * 50)
         print(self.title)
-        for alpha in alpha_values:
+        for alpha in self.exact_probability_for_alpha_value:
             print(f"P(X >= {alpha:.2f}) ≈ {self.exact_probability(alpha):.2e}")
         print("-" * 50)
 
     def plot(self):
+        # Size of the plot
         plt.figure(figsize=(10, 6))
+
         # Plot empirical frequency and bounds
-        plt.plot(self.alphas, self.empirical_frequencies, marker="o", linestyle="-", label="Empirical frequency")
+        plt.plot(
+            self.alphas, self.empirical_frequencies, marker="o", linestyle="-", label="Empirical frequency"
+        )
         plt.plot(self.alphas, self.markov_bounds, marker="x", linestyle="--", label="Markov's bound")
         plt.plot(self.alphas, self.chebyshev_bounds, marker="s", linestyle="-.", label="Chebyshev's bound")
         plt.plot(self.alphas, self.hoeffding_bounds, marker="^", linestyle=":", label="Hoeffding's bound")
-        plt.xlabel("α")
+
+        # Plot settings
+        plt.xlabel("α", fontsize=12)
         plt.xticks(self.alphas)
-        plt.ylabel("Frequency / Bound")
-        plt.title(self.title)
+        plt.ylabel("Frequency (prob.)", fontsize=12)
+        plt.suptitle(self.title, fontsize=14, x=0.53)
+        plt.title(self.subtitle, fontsize=12)
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
